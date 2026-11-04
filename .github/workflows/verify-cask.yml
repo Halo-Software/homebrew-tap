@@ -24,9 +24,17 @@ jobs:
         run: |
           ruby -c Casks/notes-by-halo.rb
 
+      - name: Tap local repository
+        run: |
+          TAP_DIR="$(brew --repo)/Library/Taps/halo-software"
+          mkdir -p "$TAP_DIR"
+          ln -s "$PWD" "$TAP_DIR/homebrew-tap"
+          brew tap --list
+          brew info --cask halo-software/tap/notes-by-halo
+
       - name: Install Cask
         run: |
-          brew install --verbose --cask ./Casks/notes-by-halo.rb
+          brew install --verbose --cask halo-software/tap/notes-by-halo
 
       - name: Verify Application and Quarantine Attribute
         run: |
@@ -49,4 +57,4 @@ jobs:
 
       - name: Uninstall Cask
         run: |
-          brew uninstall --verbose --cask notes-by-halo
+          brew uninstall --verbose --cask halo-software/tap/notes-by-halo
