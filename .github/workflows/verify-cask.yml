@@ -29,7 +29,7 @@ jobs:
           TAP_DIR="$(brew --repo)/Library/Taps/halo-software"
           mkdir -p "$TAP_DIR"
           ln -s "$PWD" "$TAP_DIR/homebrew-tap"
-          brew tap --list
+          brew tap
           brew info --cask halo-software/tap/notes-by-halo
 
       - name: Install Cask
