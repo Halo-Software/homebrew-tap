@@ -9,9 +9,18 @@ cask "notes-by-halo" do
 
   app "Notes by Halo.app"
 
+  postflight_steps do
+    on_macos do
+      run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{appdir}}/Notes by Halo.app"]
+    end
+  end
+
   caveats <<~EOS
     Notes by Halo is distributed unsigned without Apple Developer notarization.
-    If macOS displays a security warning on first launch, you can open it via:
+    The quarantine attribute (com.apple.quarantine) is automatically removed
+    during installation, and archive integrity is verified via the cask sha256 checksum.
+
+    If macOS still displays a security warning on first launch, you can open it via:
       System Settings -> Privacy & Security -> Open Anyway
     (システム設定 -> プライバシーとセキュリティ -> 「このまま開く」)
   EOS
