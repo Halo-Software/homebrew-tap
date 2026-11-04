@@ -1,0 +1,52 @@
+name: Verify Cask Installation
+
+on:
+  push:
+    branches:
+      - 'test/**'
+      - 'verify/**'
+
+jobs:
+  verify-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Show macOS environment info
+        run: |
+          sw_vers
+          uname -a
+          ruby -v
+          brew --version
+
+      - name: Verify Ruby syntax
+        run: |
+          ruby -c Casks/notes-by-halo.rb
+
+      - name: Install Cask
+        run: |
+          brew install --verbose --cask ./Casks/notes-by-halo.rb
+
+      - name: Verify Application and Quarantine Attribute
+        run: |
+          echo "=== Installed Application Path ==="
+          ls -ld "/Applications/Notes by Halo.app"
+          
+          echo "=== Extended Attributes (Top Level) ==="
+          xattr -l "/Applications/Notes by Halo.app" || true
+          
+          echo "=== Extended Attributes (Recursive) ==="
+          xattr -r "/Applications/Notes by Halo.app" || true
+          
+          echo "=== Verify Absence of com.apple.quarantine ==="
+          if xattr -r "/Applications/Notes by Halo.app" 2>&1 | grep "com.apple.quarantine"; then
+            echo "FAILED: com.apple.quarantine is still present!"
+            exit 1
+          else
+            echo "PASSED: No com.apple.quarantine attribute found on /Applications/Notes by Halo.app!"
+          fi
+
+      - name: Uninstall Cask
+        run: |
+          brew uninstall --verbose --cask notes-by-halo
