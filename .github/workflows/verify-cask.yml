@@ -30,6 +30,7 @@ jobs:
           mkdir -p "$TAP_DIR"
           ln -s "$PWD" "$TAP_DIR/homebrew-tap"
           brew tap
+          brew trust halo-software/tap
           brew info --cask halo-software/tap/notes-by-halo
 
       - name: Install Cask
