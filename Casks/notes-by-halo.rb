@@ -9,9 +9,10 @@ cask "notes-by-halo" do
 
   app "Notes by Halo.app"
 
-  postflight do
-    system_command "/usr/bin/xattr",
-                   args: ["-dr", "com.apple.quarantine", "#{appdir}/Notes by Halo.app"]
+  postflight_steps do
+    on_macos do
+      run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{appdir}}/Notes by Halo.app"]
+    end
   end
 
   caveats <<~EOS
